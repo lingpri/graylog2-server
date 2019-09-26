@@ -238,7 +238,8 @@ public class DnsLookupDataAdapter extends LookupDataAdapter {
         final String singleValue = aDnsAnswers.get(0).ipAddress();
         LookupResult.Builder builder = LookupResult.builder()
                                                    .single(singleValue)
-                                                   .multiValue(Collections.singletonMap(RESULTS_FIELD, aDnsAnswers));
+                                                   .multiValue(Collections.singletonMap(RESULTS_FIELD, aDnsAnswers))
+                                                   .stringListValue(ADnsAnswer.convertToStringListValue(aDnsAnswers));
 
         assignMinimumTTL(aDnsAnswers, builder);
 
@@ -290,7 +291,7 @@ public class DnsLookupDataAdapter extends LookupDataAdapter {
             allAnswers.addAll(ip6Answers);
 
             if (CollectionUtils.isNotEmpty(allAnswers)) {
-                builder.multiValue(Collections.singletonMap(RESULTS_FIELD, allAnswers));
+                builder.multiValue(Collections.singletonMap(RESULTS_FIELD, allAnswers)).stringListValue(ADnsAnswer.convertToStringListValue(allAnswers));
             }
 
             assignMinimumTTL(allAnswers, builder);
@@ -356,7 +357,8 @@ public class DnsLookupDataAdapter extends LookupDataAdapter {
 
         if (CollectionUtils.isNotEmpty(txtDnsAnswers)) {
             final LookupResult.Builder builder = LookupResult.builder();
-            builder.multiValue(Collections.singletonMap(RAW_RESULTS_FIELD, txtDnsAnswers));
+            builder.multiValue(Collections.singletonMap(RAW_RESULTS_FIELD, txtDnsAnswers))
+                    .stringListValue(TxtDnsAnswer.convertToStringListValue(txtDnsAnswers));
             assignMinimumTTL(txtDnsAnswers, builder);
 
             return builder.build();

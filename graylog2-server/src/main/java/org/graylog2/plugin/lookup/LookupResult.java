@@ -25,6 +25,7 @@ import org.graylog2.lookup.LookupDefaultSingleValue;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,6 +57,10 @@ public abstract class LookupResult {
     @Nullable
     public abstract Map<Object, Object> multiValue();
 
+    @JsonProperty("list_string_value")
+    @Nullable
+    public abstract List<String> stringListValue();
+
     /**
      * The time to live (in milliseconds) for a LookupResult instance. Prevents repeated lookups for the same key
      * during the time to live period. Data Tables processing does not currently use this functionality, but we
@@ -67,7 +72,7 @@ public abstract class LookupResult {
 
     @JsonIgnore
     public boolean isEmpty() {
-        return singleValue() == null && multiValue() == null;
+        return singleValue() == null && multiValue() == null && stringListValue() == null;
     }
 
     public static LookupResult empty() {
@@ -129,10 +134,12 @@ public abstract class LookupResult {
     @JsonCreator
     public static LookupResult createFromJSON(@JsonProperty("single_value") final Object singleValue,
                                               @JsonProperty("multi_value") final Map<Object, Object> multiValue,
+                                              @JsonProperty("list_string_value") final List<String> stringListValue,
                                               @JsonProperty("ttl") final long cacheTTL) {
         return builder()
                 .singleValue(singleValue)
                 .multiValue(multiValue)
+                .stringListValue(stringListValue)
                 .cacheTTL(cacheTTL)
                 .build();
     }
@@ -151,6 +158,7 @@ public abstract class LookupResult {
         // We don't want users of this class to set a generic Object single value
         abstract Builder singleValue(Object singleValue);
         public abstract Builder multiValue(Map<Object, Object> multiValue);
+        public abstract Builder stringListValue(List<String> stringListValue);
         public abstract Builder cacheTTL(long cacheTTL);
 
         public Builder single(CharSequence singleValue) {
