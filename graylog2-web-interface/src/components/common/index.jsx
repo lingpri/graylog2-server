@@ -19,6 +19,7 @@ export { default as ExpandableListItem } from './ExpandableListItem';
 export { default as ExternalLink } from './ExternalLink';
 export { default as ExternalLinkButton } from './ExternalLinkButton';
 export { default as IfPermitted } from './IfPermitted';
+export { default as Interactable } from './Interactable';
 export { default as ISODurationInput } from './ISODurationInput';
 export { default as LinkToNode } from './LinkToNode';
 export { default as LoadingIndicator } from './LoadingIndicator';
