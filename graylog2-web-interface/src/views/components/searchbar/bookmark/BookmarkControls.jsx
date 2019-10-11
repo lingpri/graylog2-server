@@ -2,13 +2,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Button, ButtonGroup } from 'react-bootstrap';
+import { Button, ButtonGroup } from 'components/graylog';
 import { ViewManagementActions } from 'views/stores/ViewManagementStore';
 import UserNotification from 'util/UserNotification';
 import { ViewStore, ViewActions } from 'views/stores/ViewStore';
 import View from 'views/logic/views/View';
 import type { ViewStoreState } from 'views/stores/ViewStore';
 import connect from 'stores/connect';
+import ViewLoaderContext from 'views/logic/ViewLoaderContext';
 
 import BookmarkForm from './BookmarkForm';
 import BookmarkList from './BookmarkList';
@@ -28,6 +29,8 @@ class BookmarkControls extends React.Component<Props, State> {
   static propTypes = {
     viewStoreState: PropTypes.object.isRequired,
   };
+
+  static contextType = ViewLoaderContext;
 
   formTarget: any;
 
@@ -103,7 +106,7 @@ class BookmarkControls extends React.Component<Props, State> {
 
     ViewManagementActions.create(newView)
       .then(() => {
-        const { loaderFunc } = this.context;
+        const loaderFunc = this.context;
         loaderFunc(newView.id);
       })
       .then(this.toggleFormModal)
@@ -118,7 +121,7 @@ class BookmarkControls extends React.Component<Props, State> {
   deleteBookmark = (view) => {
     return ViewManagementActions.delete(view)
       .then(() => UserNotification.success(`Deleting view "${view.title}" was successful!`, 'Success!'))
-      .then(ViewActions.create)
+      .then(() => ViewActions.create(View.Type.Search))
       .catch(error => UserNotification.error(`Deleting view failed: ${this._extractErrorMessage(error)}`, 'Error!'));
   };
 
@@ -164,7 +167,7 @@ class BookmarkControls extends React.Component<Props, State> {
       <div className={`${styles.position} pull-right`}>
         <ButtonGroup>
           <React.Fragment>
-            <Button disabled={disableReset} title="Empty search" onClick={ViewActions.create}>
+            <Button disabled={disableReset} title="Empty search" onClick={() => ViewActions.create(View.Type.Search)}>
               <i className="fa fa-eraser" />
             </Button>
             <Button title={title} ref={(elem) => { this.formTarget = elem; }} onClick={this.toggleFormModal}>

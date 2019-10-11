@@ -3,7 +3,6 @@ import React from 'react';
 
 import Navigation from 'components/navigation/Navigation';
 import Spinner from 'components/common/Spinner';
-import Footer from 'components/layout/Footer';
 import connect from 'stores/connect';
 import StoreProvider from 'injection/StoreProvider';
 
@@ -18,7 +17,7 @@ import 'dc/dc.css';
 
 const CurrentUserStore = StoreProvider.getStore('CurrentUser');
 
-const App = ({ children, currentUser: { currentUser }, location }) => {
+const App = ({ children, currentUser, location }) => {
   if (!currentUser) {
     return <Spinner />;
   }
@@ -47,11 +46,9 @@ App.propTypes = {
     PropTypes.element,
   ]).isRequired,
   currentUser: PropTypes.shape({
-    currentUser: PropTypes.shape({
-      full_name: PropTypes.string,
-      username: PropTypes.string,
-      permissions: PropTypes.array,
-    }),
+    full_name: PropTypes.string,
+    username: PropTypes.string,
+    permissions: PropTypes.array,
   }),
   location: PropTypes.object.isRequired,
 };
@@ -60,4 +57,4 @@ App.defaultProps = {
   currentUser: undefined,
 };
 
-export default connect(App, { currentUser: CurrentUserStore });
+export default connect(App, { currentUser: CurrentUserStore }, ({ currentUser: { currentUser } = {} }) => ({ currentUser }));
